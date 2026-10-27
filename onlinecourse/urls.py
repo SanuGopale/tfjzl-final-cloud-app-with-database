@@ -22,3 +22,21 @@ urlpatterns = [
     # <HINT> Create a route for show_exam_result view
 
  ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    # Keep your existing URL patterns here
+
+    path(
+        "courses/<int:course_id>/submit/",
+        views.submit,
+        name="submit",
+    ),
+
+    path(
+        "courses/<int:course_id>/exam_result/<int:submission_id>/",
+        views.show_exam_result,
+        name="show_exam_result",
+    ),
+]
