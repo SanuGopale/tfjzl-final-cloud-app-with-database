@@ -1,23 +1,33 @@
+
 class Question(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    content = models.CharField(max_length=200)
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE
+    )
+    question_text = models.CharField(max_length=200)
     grade = models.IntegerField(default=1)
 
+    def is_get_score(self, selected_ids):
+        correct_ids = set(
+            self.choice_set.filter(is_correct=True)
+            .values_list("id", flat=True)
+        )
+        return correct_ids == set(selected_ids)
+
     def __str__(self):
-        return self.content
+        return self.question_text
 
 
 class Choice(models.Model):
     question = models.ForeignKey(
         Question,
-        on_delete=models.CASCADE,
-        related_name="choices"
+        on_delete=models.CASCADE
     )
-    content = models.CharField(max_length=200)
+    choice_text = models.CharField(max_length=200)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.content
+        return self.choice_text
 
 
 class Submission(models.Model):
@@ -28,4 +38,4 @@ class Submission(models.Model):
     choices = models.ManyToManyField(Choice)
 
     def __str__(self):
-        return f"Submission {self.id}"
+        return f"Submission for enrollment {self.enrollment.id}"
